@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { deleteCategory } from "./category/delete-action";
 
 export default async function AdminMenuPage() {
   const restaurant = await prisma.restaurant.findUnique({
@@ -47,6 +48,13 @@ export default async function AdminMenuPage() {
             </a>
 
             <a
+              href="/admin/menu/category/new"
+              className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium"
+            >
+              Nouvelle catégorie
+            </a>
+
+            <a
               href="/admin/menu/new"
               className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white"
             >
@@ -61,8 +69,33 @@ export default async function AdminMenuPage() {
               key={category.id}
               className="rounded-2xl bg-white p-6 shadow-sm"
             >
-              <h2 className="text-xl font-semibold">{category.name}</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold">{category.name}</h2>
 
+                <div className="flex items-center gap-2">
+                  <a
+                    href={`/admin/menu/category/${category.id}/edit`}
+                    className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+                  >
+                    Modifier
+                  </a>
+
+                  <form action={deleteCategory}>
+                    <input
+                      type="hidden"
+                      name="categoryId"
+                      value={category.id}
+                    />
+
+                    <button
+                      type="submit"
+                      className="rounded-lg border border-red-300 px-3 py-2 text-sm text-red-600"
+                    >
+                      Supprimer
+                    </button>
+                  </form>
+                </div>
+              </div>
               <div className="mt-4 space-y-3">
                 {category.products.map((product) => (
                   <div
